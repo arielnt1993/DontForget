@@ -14,10 +14,3 @@ public class DontForgetApplication {
 
 }
 
-@RestController
-class Hello {
-    @RequestMapping("/")
-    String index(){
-        return "hola mundo";
-    }
-}
