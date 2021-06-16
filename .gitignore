@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Springboot app ###
+dontForget/src/main/resources
