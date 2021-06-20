@@ -1,6 +1,8 @@
 package com.ariel.dontforget.managment;
 import com.ariel.dontforget.activities.Activity;
 import com.ariel.dontforget.activities.ActivityService;
+import com.ariel.dontforget.folders.Folder;
+import com.ariel.dontforget.folders.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +14,12 @@ import java.util.List;
 @RequestMapping("api/manager/")
 public class ManageController {
     private final ActivityService activityService;
+    private final FolderService folderService;
 
     @Autowired
-    public ManageController(ActivityService activityService){
+    public ManageController(ActivityService activityService,FolderService folderService){
         this.activityService = activityService;
+        this.folderService = folderService;
     }
 
     @GetMapping("activity")
@@ -26,5 +30,16 @@ public class ManageController {
     @PostMapping("activity")
     public void registerNewActivity(@RequestBody Activity activity){
         activityService.addActivity(activity);
+    }
+
+
+    @GetMapping("folders")
+    public ResponseEntity<List<Folder>> getFolders(){
+        List<Folder> folders = folderService.getFolders();
+        return new ResponseEntity<>(folders,HttpStatus.OK);
+    }
+    @PostMapping("folder")
+    public void registerNewFolder(@RequestBody Folder folder){
+        folderService.addFolder(folder);
     }
 }

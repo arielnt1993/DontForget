@@ -1,4 +1,7 @@
 package com.ariel.dontforget.activities;
+
+import org.hibernate.annotations.GeneratorType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -6,7 +9,14 @@ import java.io.Serializable;
 @Table(name="task")
 public class Activity implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "activity_sequence",
+            sequenceName = "activity_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "activity_sequence")
     @Column(nullable = false,updatable = true,unique = true)
     private Long id;
     private String name;
@@ -22,6 +32,14 @@ public class Activity implements Serializable{
         this.name = name;
         this.done = done;
     }
+    public Activity(Long id, String name,Long folder_id, boolean done){
+
+        this.id = id;
+        this.name = name;
+        this.folder_id = folder_id;
+        this.done = done;
+    }
+
 
     public Long getId() {
         return id;
@@ -46,4 +64,14 @@ public class Activity implements Serializable{
     public void setDone(boolean done) {
         this.done = done;
     }
+
+    public Long getFolder_id() {
+        return folder_id;
+    }
+
+    public void setFolder_id(Long folder_id) {
+        this.folder_id = folder_id;
+    }
+
+
 }
