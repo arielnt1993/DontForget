@@ -5,11 +5,8 @@ import com.ariel.dontforget.folders.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ActivityService {
@@ -24,17 +21,29 @@ public class ActivityService {
 
     public void addActivity(Activity activity){
         Optional<Activity> activityOld = activityRepository.findByName(activity.getName());
-        Optional<Folder> folder = folderRepository.findFolderById(activity.getFolder_id());
+        Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
         if(activityOld.isPresent()){
             throw new IllegalStateException("la actividad ya existe");
         }
-        if((activity.getFolder_id()!=0)&&(folder.isEmpty())){
+        if((activity.getFolderId()!=0)&&(folder.isEmpty())){
             throw new IllegalStateException("folder does not exists!!");
         }
         activityRepository.save(activity);
     }
     public List<Activity> getActivities(){
+        List<Activity> activities = activityRepository.findAll();
+        activities.forEach(activity -> {
+            Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
+            folder.ifPresent(value -> activity.setFolderName(value.getName()));
+        });
+        return activities;
+    }
+    public Activity getActivity(String name){
+        if(activityRepository.findByName(name).isPresent()){
+            return activityRepository.findByName(name).get();
+        }else {
+            throw new IllegalStateException("activity does not exists");
+        }
 
-        return activityRepository.findAll();
     }
 }

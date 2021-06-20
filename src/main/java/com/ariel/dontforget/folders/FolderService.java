@@ -3,10 +3,8 @@ import com.ariel.dontforget.activities.Activity;
 import com.ariel.dontforget.activities.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class FolderService {
 
         folders.forEach(folder -> {
             folder.setActivities(activities.stream()
-                    .filter(activity -> activity.getFolder_id().equals(folder.getId()))
+                    .filter(activity -> activity.getFolderId().equals(folder.getId()))
                     .collect(Collectors.toList()));
         });
         return folders;

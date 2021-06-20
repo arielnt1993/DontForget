@@ -20,11 +20,16 @@ public class Activity implements Serializable{
     @Column(nullable = false,updatable = true,unique = true)
     private Long id;
     private String name;
-    private Long folder_id = 0L;
+    private Long folderId = 0L;
+    @Transient
+    private String folderName;
     private boolean done;
 
     public Activity(){
 
+    }
+    public Activity(String name){
+        this.name = name;
     }
     public Activity(Long id, String name, boolean done){
 
@@ -32,11 +37,19 @@ public class Activity implements Serializable{
         this.name = name;
         this.done = done;
     }
-    public Activity(Long id, String name,Long folder_id, boolean done){
+    public Activity(Long id, String name,Long folderId, boolean done){
 
         this.id = id;
         this.name = name;
-        this.folder_id = folder_id;
+        this.folderId = folderId;
+        this.done = done;
+    }
+    public Activity(Long id, String name,Long folderId,String folderName, boolean done){
+
+        this.id = id;
+        this.name = name;
+        this.folderId = folderId;
+        this.folderName = folderName;
         this.done = done;
     }
 
@@ -65,13 +78,20 @@ public class Activity implements Serializable{
         this.done = done;
     }
 
-    public Long getFolder_id() {
-        return folder_id;
+    public Long getFolderId() {
+        return folderId;
     }
 
-    public void setFolder_id(Long folder_id) {
-        this.folder_id = folder_id;
+    public void setFolderId(Long folderId) {
+        this.folderId = folderId;
     }
 
 
+    public String getFolderName() {
+        return folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/manager/")
+@RequestMapping(value = "api/manager/",headers = {"content-type=application/json"})
 public class ManageController {
     private final ActivityService activityService;
     private final FolderService folderService;
@@ -22,10 +22,15 @@ public class ManageController {
         this.folderService = folderService;
     }
 
-    @GetMapping("activity")
+    @GetMapping("activities")
     public ResponseEntity<List<Activity>> getActivities(){
         List<Activity> activities = activityService.getActivities();
         return new ResponseEntity<>(activities,HttpStatus.OK);
+    }
+    @GetMapping("activity")
+    public ResponseEntity<Activity>getActivity(@RequestBody Activity activity){
+
+        return new ResponseEntity<>(activityService.getActivity(activity.getName()),HttpStatus.OK);
     }
     @PostMapping("activity")
     public void registerNewActivity(@RequestBody Activity activity){
