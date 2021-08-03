@@ -21,41 +21,43 @@ public class ActivityService {
         this.folderRepository = folderRepository;
     }
 
-    public void addActivity(Activity activity){
+    public ResponseEntity<Activity> addActivity(Activity activity){
         Optional<Activity> activityOld = activityRepository.findByName(activity.getName());
         Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
         if(activityOld.isPresent()){
-            throw new IllegalStateException("la actividad ya existe");
+            return new ResponseEntity<>(activity,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if((activity.getFolderId()!=0)&&(folder.isEmpty())){
-            throw new IllegalStateException("folder does not exists!!");
+            return new ResponseEntity<>(activity,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        activityRepository.save(activity);
+        return new ResponseEntity<>(activity,HttpStatus.OK);
     }
-    public List<Activity> getActivities(){
+    public ResponseEntity<List<Activity>> getActivities(){
         List<Activity> activities = activityRepository.findAll();
-        activities.forEach(activity -> {
-            Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
-            folder.ifPresent(activity::setFolder);
-        });
-        return activities;
-    }
-    public Activity getActivity(Activity activity){
-        Optional<Activity> task = activityRepository.findByName(activity.getName());
-        if (task.isPresent()){
-            return task.get();
-        }else {
-            throw new IllegalStateException("activity not found");
-        }
+        if(!activities.isEmpty()){
+            activities.forEach(activity -> {
+                Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
+                folder.ifPresent(activity::setFolder);
+            });
+            return new ResponseEntity<>(activities,HttpStatus.OK);
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
-    public void deleteActivity(Activity activity){
-        Optional<Activity> task = activityRepository.findById(activity.getId());
-        if(task.isPresent()){
+
+    public ResponseEntity<Activity> getActivity(Activity activity){
+        Optional<Activity> activityData = activityRepository.findByName(activity.getName());
+        return activityData.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+    }
+
+    public ResponseEntity<Activity> deleteActivity(Activity activity){
+        Optional<Activity> activityData = activityRepository.findById(activity.getId());
+        if(activityData.isPresent()){
             activityRepository.deleteById(activity.getId());
-
+            return new ResponseEntity<>(activity,HttpStatus.OK);
         }else{
-           throw new IllegalStateException("activity not found");
+           return new ResponseEntity<>(activity,HttpStatus.NOT_FOUND);
         }
     }
 

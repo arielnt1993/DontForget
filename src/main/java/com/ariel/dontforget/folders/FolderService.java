@@ -23,14 +23,16 @@ public class FolderService {
         this.activityRepository = activityRepository;
     }
 
-    public List<Folder> getFolders(){
+    public ResponseEntity<List<Folder>> getFolders(){
         List<Folder> folders = folderRepository.findAll();
         List<Activity> activities = activityRepository.findAll();
+        if(!folders.isEmpty()){
+            folders.forEach(folder -> folder.setActivities(activities.stream()
+                    .filter(activity -> activity.getFolderId().equals(folder.getId()))
+                    .collect(Collectors.toList())));
+            return new ResponseEntity<>(folders,HttpStatus.OK);
+        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        folders.forEach(folder -> folder.setActivities(activities.stream()
-                .filter(activity -> activity.getFolderId().equals(folder.getId()))
-                .collect(Collectors.toList())));
-        return folders;
     }
     public ResponseEntity<Folder> getFolder(Folder folder){
         Optional<Folder> folderData = folderRepository.findFolderById(folder.getId());
@@ -40,12 +42,15 @@ public class FolderService {
             return new ResponseEntity<>(folder,HttpStatus.OK);
         }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    public void addFolder(Folder folder){
+    public ResponseEntity<Folder> addFolder(Folder folder){
         Optional<Folder> folderOptional = folderRepository.findFolderByName(folder.getName());
         if(folderOptional.isPresent()){
-            throw new IllegalStateException("folder already exists");
+            return new ResponseEntity<>(folder,HttpStatus.IM_USED);
+        }else {
+            folderRepository.save(folder);
+            return new ResponseEntity<>(folder,HttpStatus.OK);
         }
-        folderRepository.save(folder);
+
     }
     public ResponseEntity<Folder> updateFolder(Folder folder){
         Optional<Folder> folderData = folderRepository.findFolderById(folder.getId());
