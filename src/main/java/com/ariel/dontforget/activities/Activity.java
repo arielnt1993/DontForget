@@ -1,7 +1,6 @@
 package com.ariel.dontforget.activities;
-
+import com.ariel.dontforget.folders.Folder;
 import org.hibernate.annotations.GeneratorType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -20,16 +19,19 @@ public class Activity implements Serializable{
     @Column(nullable = false,updatable = true,unique = true)
     private Long id;
     private String name;
-    private Long folderId = 0L;
-    @Transient
-    private String folderName;
+    private Long folderId;
     private boolean done;
-
+    @Transient
+    private Folder folder;
     public Activity(){
 
     }
     public Activity(String name){
         this.name = name;
+    }
+    public Activity(Long id,boolean done){
+        this.id = id;
+        this.done = done;
     }
     public Activity(Long id, String name, boolean done){
 
@@ -44,16 +46,15 @@ public class Activity implements Serializable{
         this.folderId = folderId;
         this.done = done;
     }
-    public Activity(Long id, String name,Long folderId,String folderName, boolean done){
 
+    public Activity(Long id, String name,Long folderId, boolean done, Folder folder){
         this.id = id;
         this.name = name;
         this.folderId = folderId;
-        this.folderName = folderName;
+
         this.done = done;
+        this.folder = folder;
     }
-
-
     public Long getId() {
         return id;
     }
@@ -86,12 +87,11 @@ public class Activity implements Serializable{
         this.folderId = folderId;
     }
 
-
-    public String getFolderName() {
-        return folderName;
+    public Folder getFolder() {
+        return folder;
     }
 
-    public void setFolderName(String folderName) {
-        this.folderName = folderName;
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 }

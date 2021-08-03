@@ -8,7 +8,12 @@
     </b-card-text>
     <b-card-text class="d-flex text-center justify-content-center">
       <p class="my-auto">hecho:</p>
-      <input class="checkBox" type="checkbox" v-model="activity.done" />
+      <input
+        class="checkBox"
+        type="checkbox"
+        v-model="activity.done"
+        @change="completeTask(activity)"
+      />
     </b-card-text>
   </div>
 </template>
@@ -27,6 +32,18 @@ export default {
         done: this.task.done,
       },
     };
+  },
+  methods: {
+    completeTask(activity) {
+      fetch("http://localhost:8080/api/manager/activity/complete", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: activity.id,
+          done: activity.done,
+        }),
+      }).catch((err) => console.log(err.message));
+    },
   },
 };
 </script>

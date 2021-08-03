@@ -3,6 +3,8 @@ package com.ariel.dontforget.activities;
 import com.ariel.dontforget.folders.Folder;
 import com.ariel.dontforget.folders.FolderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,16 +36,49 @@ public class ActivityService {
         List<Activity> activities = activityRepository.findAll();
         activities.forEach(activity -> {
             Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
-            folder.ifPresent(value -> activity.setFolderName(value.getName()));
+            folder.ifPresent(activity::setFolder);
         });
         return activities;
     }
-    public Activity getActivity(String name){
-        if(activityRepository.findByName(name).isPresent()){
-            return activityRepository.findByName(name).get();
+    public Activity getActivity(Activity activity){
+        Optional<Activity> task = activityRepository.findByName(activity.getName());
+        if (task.isPresent()){
+            return task.get();
         }else {
-            throw new IllegalStateException("activity does not exists");
+            throw new IllegalStateException("activity not found");
         }
 
+    }
+    public void deleteActivity(Activity activity){
+        Optional<Activity> task = activityRepository.findById(activity.getId());
+        if(task.isPresent()){
+            activityRepository.deleteById(activity.getId());
+
+        }else{
+           throw new IllegalStateException("activity not found");
+        }
+    }
+
+    public ResponseEntity<Activity> updateActivity(Activity activity){
+        Optional<Activity> activityData = activityRepository.findById(activity.getId());
+        if(activityData.isPresent()){
+            Activity oldActivity = activityData.get();
+            oldActivity.setName(activity.getName());
+            oldActivity.setFolderId(activity.getFolderId());
+            oldActivity.setDone(activity.isDone());
+            return new ResponseEntity<>(activityRepository.save(oldActivity), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    public ResponseEntity<Activity> activityComplete(Activity activity){
+        Optional<Activity> activityData = activityRepository.findById(activity.getId());
+        if(activityData.isPresent()){
+            Activity completedActivity = activityData.get();
+            completedActivity.setDone(activity.isDone());
+            return new ResponseEntity<>(activityRepository.save(completedActivity),HttpStatus.OK);
+        }else {
+            throw new IllegalStateException("activity not found");
+        }
     }
 }

@@ -24,6 +24,9 @@ public class Folder {
     public Folder(){
 
     }
+    public Folder(Long id){
+        this.id = id;
+    }
     public Folder(Long id, String name, List<Activity> activities){
 
         this.id = id;
