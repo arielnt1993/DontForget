@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card-title class="text-center">
+    <b-card-title class="text-center fs-6">
       {{ activity.name }}
     </b-card-title>
     <b-card-text class="text-center">
@@ -27,7 +27,7 @@ export default {
       activity: {
         id: this.task.id,
         name: this.task.name,
-        folderName: this.task.folderName,
+        folder: this.task.folder,
         folderId: this.task.folderId,
         done: this.task.done,
       },

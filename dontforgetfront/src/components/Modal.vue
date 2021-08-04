@@ -1,10 +1,6 @@
 <template>
   <b-modal v-bind:id="modal" hide-header-close>
-    <b-form>
-      <b-form-input required placeholder="name" label="name" v-model="name">
-      </b-form-input>
-      <b-form-select v-model="select" :options="folders"></b-form-select>
-    </b-form>
+    <b-form-select v-model="select" :options="options"/>
   </b-modal>
 </template>
 
@@ -15,7 +11,7 @@ export default {
   data() {
     return {
       select: null,
-      folders: [
+      options: [
         {
           value: null,
           text: "none",
@@ -25,6 +21,22 @@ export default {
   },
   methods: {
     resetModal() {},
+  },
+  beforeMount() {
+    fetch("http://localhost:8080/api/manager/folders", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        data.forEach((ele) => {
+          let op = { value: ele.id, text: ele.name };
+          this.options.push(op);
+          console.log(op);
+          return this.options;
+        });
+      })
+      .catch((err) => console.log(err));
   },
 };
 </script>

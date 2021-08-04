@@ -1,12 +1,11 @@
 package com.ariel.dontforget.managment;
-import com.ariel.dontforget.activities.Activity;
 import com.ariel.dontforget.activities.ActivityService;
 import com.ariel.dontforget.folders.Folder;
 import com.ariel.dontforget.folders.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController

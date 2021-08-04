@@ -25,11 +25,12 @@ public class ActivityService {
         Optional<Activity> activityOld = activityRepository.findByName(activity.getName());
         Optional<Folder> folder = folderRepository.findFolderById(activity.getFolderId());
         if(activityOld.isPresent()){
-            return new ResponseEntity<>(activity,HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new IllegalStateException("the task already exists!");
         }
         if((activity.getFolderId()!=0)&&(folder.isEmpty())){
-            return new ResponseEntity<>(activity,HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new IllegalStateException("folder does not exists");
         }
+        activityRepository.save(activity);
         return new ResponseEntity<>(activity,HttpStatus.OK);
     }
     public ResponseEntity<List<Activity>> getActivities(){

@@ -19,13 +19,14 @@ public class Activity implements Serializable{
     @Column(nullable = false,updatable = true,unique = true)
     private Long id;
     private String name;
-    private Long folderId;
+    private Long folderId = 0L;
     private boolean done;
     @Transient
     private Folder folder;
     public Activity(){
 
     }
+
     public Activity(String name){
         this.name = name;
     }
@@ -33,9 +34,8 @@ public class Activity implements Serializable{
         this.id = id;
         this.done = done;
     }
-    public Activity(Long id, String name, boolean done){
+    public Activity(String name, boolean done){
 
-        this.id = id;
         this.name = name;
         this.done = done;
     }
